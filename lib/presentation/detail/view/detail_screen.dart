@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/detail_cubit.dart';
@@ -153,9 +154,38 @@ class _DetailScreenState extends State<DetailScreen>
                                 icon: Icons.arrow_back,
                                 onTap: () => Navigator.pop(context),
                               ),
-                              _buildGlassButton(
-                                icon: Icons.favorite_border,
-                                onTap: () {},
+                              Row(
+                                children: [
+                                  _buildGlassButton(
+                                    icon: Icons.share,
+                                    onTap: () {
+                                      Clipboard.setData(
+                                        ClipboardData(
+                                          text:
+                                              'https://prokesdex.vercel.app/#/pokemon/${pokemon.id}',
+                                        ),
+                                      ).then((_) {
+                                        if (context.mounted) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                'Link copied to clipboard!',
+                                              ),
+                                              duration: Duration(seconds: 2),
+                                            ),
+                                          );
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  const SizedBox(width: 10),
+                                  _buildGlassButton(
+                                    icon: Icons.favorite_border,
+                                    onTap: () {},
+                                  ),
+                                ],
                               ),
                             ],
                           ),
