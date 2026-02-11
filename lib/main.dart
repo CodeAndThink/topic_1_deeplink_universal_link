@@ -18,8 +18,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // using MultiRepositoryProvider for DI of Repositories and UseCases
-    // and MultiBlocProvider for Cubits
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<PokemonRemoteDataSource>(
