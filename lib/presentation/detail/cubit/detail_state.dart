@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import '../../../domain/entities/pokemon_entity.dart';
 
+/// State for DetailCubit
 abstract class DetailState extends Equatable {
   const DetailState();
 
