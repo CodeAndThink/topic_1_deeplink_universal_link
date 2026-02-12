@@ -2,7 +2,7 @@
     <application
         android:label="topic_1_deeplink_universal_link"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
 
         <activity
             android:name=".MainActivity"

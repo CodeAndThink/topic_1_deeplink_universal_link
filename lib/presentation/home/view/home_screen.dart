@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../widgets/rotating_pokeball.dart';
+import '../../widgets/pokemon_list_item_shimmer.dart';
 import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
 import '../../../domain/entities/pokemon_entity.dart';
@@ -149,9 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   String? error;
 
                   if (state is HomeLoading && state.isFirstLoad) {
-                    return const Center(
-                      child: CircularProgressIndicator(color: Colors.white),
-                    );
+                    return const PokemonListShimmer();
                   } else if (state is HomeLoading) {
                     pokemonList = state.currentList;
                     isLoading = true;
@@ -187,7 +187,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemBuilder: (context, index) {
                       if (index == pokemonList.length) {
                         return const Center(
-                          child: CircularProgressIndicator(color: Colors.white),
+                          child: RotatingPokeball(
+                            size: 40,
+                            color: Colors.white,
+                          ),
                         );
                       }
                       final pokemon = pokemonList[index];

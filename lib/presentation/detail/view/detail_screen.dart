@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../widgets/rotating_pokeball.dart';
 import '../cubit/detail_cubit.dart';
 import '../cubit/detail_state.dart';
 import '../../../domain/entities/pokemon_entity.dart';
@@ -94,7 +95,7 @@ class _DetailScreenState extends State<DetailScreen>
       body: BlocBuilder<DetailCubit, DetailState>(
         builder: (context, state) {
           if (state is DetailLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: RotatingPokeball(size: 80));
           }
 
           if (state is DetailError) {
@@ -137,187 +138,207 @@ class _DetailScreenState extends State<DetailScreen>
                       color: Colors.white.withValues(alpha: 0.15),
                     ),
                   ),
-                  Column(
-                    children: [
-                      // Custom App Bar Area
-                      SafeArea(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 10,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  NestedScrollView(
+                    headerSliverBuilder: (context, innerBoxIsScrolled) {
+                      return [
+                        SliverToBoxAdapter(
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _buildGlassButton(
-                                icon: Icons.arrow_back,
-                                onTap: () => Navigator.pop(context),
-                              ),
-                              Row(
-                                children: [
-                                  _buildGlassButton(
-                                    icon: Icons.share,
-                                    onTap: () {
-                                      Clipboard.setData(
-                                        ClipboardData(
-                                          text:
-                                              'https://prokesdex.vercel.app/#/pokemon/${pokemon.id}',
-                                        ),
-                                      ).then((_) {
-                                        if (context.mounted) {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                'Link copied to clipboard!',
-                                              ),
-                                              duration: Duration(seconds: 2),
-                                            ),
-                                          );
-                                        }
-                                      });
-                                    },
+                              // Custom App Bar Area
+                              SafeArea(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 10,
                                   ),
-                                  const SizedBox(width: 10),
-                                  _buildGlassButton(
-                                    icon: Icons.favorite_border,
-                                    onTap: () {},
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      // Header Content (Name, Type, Image)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  pokemon.name.toUpperCase(),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1.2,
-                                    shadows: [
-                                      Shadow(
-                                        color: Colors.black26,
-                                        offset: Offset(0, 2),
-                                        blurRadius: 4,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      _buildGlassButton(
+                                        icon: Icons.arrow_back,
+                                        onTap: () => Navigator.pop(context),
+                                      ),
+                                      Row(
+                                        children: [
+                                          _buildGlassButton(
+                                            icon: Icons.share,
+                                            onTap: () {
+                                              Clipboard.setData(
+                                                ClipboardData(
+                                                  text:
+                                                      'https://prokesdex.vercel.app/#/pokemon/${pokemon.id}',
+                                                ),
+                                              ).then((_) {
+                                                if (context.mounted) {
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text(
+                                                        'Link copied to clipboard!',
+                                                      ),
+                                                      duration: Duration(
+                                                        seconds: 2,
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                              });
+                                            },
+                                          ),
+                                          const SizedBox(width: 10),
+                                          _buildGlassButton(
+                                            icon: Icons.favorite_border,
+                                            onTap: () {},
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ),
-                                Text(
-                                  '#${pokemon.id.toString().padLeft(3, '0')}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+                              ),
+                              // Header Content (Name, Type, Image)
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24.0,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          pokemon.name.toUpperCase(),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 32,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 1.2,
+                                            shadows: [
+                                              Shadow(
+                                                color: Colors.black26,
+                                                offset: Offset(0, 2),
+                                                blurRadius: 4,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Text(
+                                          '#${pokemon.id.toString().padLeft(3, '0')}',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Wrap(
+                                      spacing: 8,
+                                      children: pokemon.types.map((type) {
+                                        return _buildGlassChip(type);
+                                      }).toList(),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              // Floating Image
+                              Center(
+                                child: AnimatedBuilder(
+                                  animation: _floatAnimation,
+                                  builder: (context, child) {
+                                    return Transform.translate(
+                                      offset: Offset(0, _floatAnimation.value),
+                                      child: child,
+                                    );
+                                  },
+                                  child: Hero(
+                                    tag: pokemon.id,
+                                    child: CachedNetworkImage(
+                                      imageUrl: pokemon.imageUrl,
+                                      height: 250,
+                                      fit: BoxFit.contain,
+                                      placeholder: (_, __) => const SizedBox(),
+                                    ),
                                   ),
                                 ),
+                              ),
+                              const SizedBox(height: 20),
+                            ],
+                          ),
+                        ),
+                      ];
+                    },
+                    body: Container(
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(40),
+                          topRight: Radius.circular(40),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 20,
+                            offset: Offset(0, -5),
+                          ),
+                        ],
+                      ),
+                      child: DefaultTabController(
+                        length: 3,
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 10),
+                            TabBar(
+                              labelColor: Colors.black87,
+                              unselectedLabelColor: Colors.grey,
+                              labelStyle: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                              indicatorColor: primaryColor,
+                              indicatorSize: TabBarIndicatorSize.label,
+                              indicatorWeight: 3,
+                              tabs: const [
+                                Tab(text: 'About'),
+                                Tab(text: 'Base Stats'),
+                                Tab(text: 'Evolution'),
                               ],
                             ),
-                            const SizedBox(height: 10),
-                            Wrap(
-                              spacing: 8,
-                              children: pokemon.types.map((type) {
-                                return _buildGlassChip(type);
-                              }).toList(),
+                            Expanded(
+                              child: TabBarView(
+                                children: [
+                                  // About Tab
+                                  SingleChildScrollView(
+                                    child: _buildAboutTab(pokemon),
+                                  ),
+                                  // Stats Tab
+                                  SingleChildScrollView(
+                                    child: _buildStatsTab(
+                                      pokemon,
+                                      primaryColor,
+                                    ),
+                                  ),
+                                  // Evolution Tab
+                                  const Center(
+                                    child: Text('Evolution Chain Coming Soon'),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      // Floating Image
-                      AnimatedBuilder(
-                        animation: _floatAnimation,
-                        builder: (context, child) {
-                          return Transform.translate(
-                            offset: Offset(0, _floatAnimation.value),
-                            child: child,
-                          );
-                        },
-                        child: Hero(
-                          tag: pokemon.id,
-                          child: CachedNetworkImage(
-                            imageUrl: pokemon.imageUrl,
-                            height: 250,
-                            fit: BoxFit.contain,
-                            placeholder: (_, __) => const SizedBox(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      // White Sheet with Tabs
-                      Expanded(
-                        child: Container(
-                          width: double.infinity,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(40),
-                              topRight: Radius.circular(40),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 20,
-                                offset: Offset(0, -5),
-                              ),
-                            ],
-                          ),
-                          child: DefaultTabController(
-                            length: 3,
-                            child: Column(
-                              children: [
-                                const SizedBox(height: 10),
-                                TabBar(
-                                  labelColor: Colors.black87,
-                                  unselectedLabelColor: Colors.grey,
-                                  labelStyle: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                  indicatorColor: primaryColor,
-                                  indicatorSize: TabBarIndicatorSize.label,
-                                  indicatorWeight: 3,
-                                  tabs: const [
-                                    Tab(text: 'About'),
-                                    Tab(text: 'Base Stats'),
-                                    Tab(text: 'Evolution'),
-                                  ],
-                                ),
-                                Expanded(
-                                  child: TabBarView(
-                                    children: [
-                                      // About Tab
-                                      _buildAboutTab(pokemon),
-                                      // Stats Tab
-                                      _buildStatsTab(pokemon, primaryColor),
-                                      // Evolution Tab
-                                      const Center(
-                                        child: Text(
-                                          'Evolution Chain Coming Soon',
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ],
               ),
