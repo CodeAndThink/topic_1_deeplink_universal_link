@@ -2,7 +2,7 @@
 
 A new Flutter project to demonstrate Deep Links and Universal Links.
 
-![Demo](demo.gif)
+<img src="demo.gif" width="250"/>
 
 ## Prerequisites
 
