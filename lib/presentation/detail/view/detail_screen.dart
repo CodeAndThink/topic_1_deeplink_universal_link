@@ -401,26 +401,43 @@ class _DetailScreenState extends State<DetailScreen>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildAboutItem('Height', '${pokemon.height! / 10} m'),
+                _buildAboutItem(
+                  Icons.height,
+                  'Height',
+                  '${pokemon.height! / 10} m',
+                ),
                 Container(width: 1, height: 40, color: Colors.grey[300]),
-                _buildAboutItem('Weight', '${pokemon.weight! / 10} kg'),
+                _buildAboutItem(
+                  Icons.monitor_weight,
+                  'Weight',
+                  '${pokemon.weight! / 10} kg',
+                ),
               ],
             ),
           ),
           const SizedBox(height: 30),
-          const Text(
-            'More details about species and abilities would go here.',
+          Text(
+            pokemon.description.isNotEmpty
+                ? pokemon.description
+                : 'No description available.',
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.grey, fontSize: 14, height: 1.5),
+            style: const TextStyle(
+              color: Colors.grey,
+              fontSize: 14,
+              height: 1.5,
+              fontStyle: FontStyle.italic,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildAboutItem(String label, String value) {
+  Widget _buildAboutItem(IconData icon, String label, String value) {
     return Column(
       children: [
+        Icon(icon, color: Colors.grey[400], size: 20),
+        const SizedBox(height: 5),
         Text(label, style: TextStyle(color: Colors.grey[500], fontSize: 14)),
         const SizedBox(height: 5),
         Text(
@@ -461,38 +478,7 @@ class _DetailScreenState extends State<DetailScreen>
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
-                Expanded(
-                  child: Container(
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10), // Fully rounded
-                    ),
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        return Align(
-                          alignment: Alignment.centerLeft,
-                          child: Container(
-                            width: constraints.maxWidth * (stat.baseStat / 100),
-                            decoration: BoxDecoration(
-                              color: stat.baseStat >= 50
-                                  ? Colors.green
-                                  : Colors.redAccent,
-                              borderRadius: BorderRadius.circular(10),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 4,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
+                Expanded(child: _AnimatedProgressBar(value: stat.baseStat)),
               ],
             ),
           );
@@ -518,5 +504,99 @@ class _DetailScreenState extends State<DetailScreen>
       default:
         return name.toUpperCase();
     }
+  }
+}
+
+class _AnimatedProgressBar extends StatelessWidget {
+  final int value;
+
+  const _AnimatedProgressBar({required this.value});
+
+  Color _getColor(double currentValue) {
+    if (currentValue < 34) {
+      return Colors.red;
+    } else if (currentValue < 68) {
+      return Colors.orange;
+    } else {
+      return Colors.green;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 20, // Larger height
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return TweenAnimationBuilder<double>(
+            tween: Tween<double>(begin: 0, end: value.toDouble()),
+            duration: const Duration(seconds: 2),
+            curve: Curves.easeOutQuart,
+            builder: (context, currentValue, child) {
+              final color = _getColor(currentValue);
+              final width =
+                  (currentValue / 100).clamp(0.0, 1.0) * constraints.maxWidth;
+
+              return Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      width: width,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [color.withValues(alpha: 0.8), color],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: color.withValues(alpha: 0.4),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // Liquid Glass Highlight (Top Half)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      width: width,
+                      height: 10, // Top half
+                      margin: const EdgeInsets.only(
+                        left: 2,
+                        top: 1,
+                        right: 2,
+                      ), // Slight inset
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          topRight: Radius.circular(8),
+                        ),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.white.withValues(alpha: 0.4),
+                            Colors.white.withValues(alpha: 0.1),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
+    );
   }
 }

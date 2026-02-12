@@ -17,6 +17,7 @@ class PokemonEntity {
   final int? height;
   final int? weight;
   final List<PokemonStatEntity> stats;
+  final String description;
 
   const PokemonEntity({
     required this.id,
@@ -26,5 +27,6 @@ class PokemonEntity {
     this.height,
     this.weight,
     required this.stats,
+    this.description = '',
   });
 }

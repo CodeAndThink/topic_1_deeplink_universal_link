@@ -47,9 +47,30 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
   @override
   Future<PokemonModel> getPokemonDetail(int id) async {
     final response = await http.get(Uri.parse('$baseUrl/$id'));
+    final speciesResponse = await http.get(
+      Uri.parse('https://pokeapi.co/api/v2/pokemon-species/$id'),
+    );
 
     if (response.statusCode == 200) {
-      return PokemonModel.fromJson(json.decode(response.body));
+      String description = '';
+      if (speciesResponse.statusCode == 200) {
+        final speciesData = json.decode(speciesResponse.body);
+        final flavorTextEntries = speciesData['flavor_text_entries'] as List;
+        final englishEntry = flavorTextEntries.firstWhere(
+          (entry) => entry['language']['name'] == 'en',
+          orElse: () => null,
+        );
+        if (englishEntry != null) {
+          description = englishEntry['flavor_text']
+              .replaceAll('\n', ' ')
+              .replaceAll('\f', ' ');
+        }
+      }
+
+      return PokemonModel.fromJson(
+        json.decode(response.body),
+        description: description,
+      );
     } else {
       throw Exception('Failed to load pokemon detail');
     }

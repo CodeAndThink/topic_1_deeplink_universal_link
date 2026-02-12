@@ -9,9 +9,13 @@ class PokemonModel extends PokemonEntity {
     super.height,
     super.weight,
     required super.stats,
+    super.description,
   });
 
-  factory PokemonModel.fromJson(Map<String, dynamic> json) {
+  factory PokemonModel.fromJson(
+    Map<String, dynamic> json, {
+    String description = '',
+  }) {
     return PokemonModel(
       id: json['id'],
       name: json['name'],
@@ -29,6 +33,7 @@ class PokemonModel extends PokemonEntity {
               ?.map((s) => PokemonStatModel.fromJson(s))
               .toList() ??
           [],
+      description: description,
     );
   }
 
