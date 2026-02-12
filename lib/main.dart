@@ -9,10 +9,7 @@ import 'presentation/detail/cubit/detail_cubit.dart';
 import 'presentation/home/cubit/home_cubit.dart';
 import 'router/app_router.dart';
 
-import 'package:flutter_web_plugins/url_strategy.dart';
-
 void main() {
-  usePathUrlStrategy();
   runApp(const MainApp());
 }
 
