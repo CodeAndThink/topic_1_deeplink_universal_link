@@ -42,6 +42,15 @@
                 <data
                     android:scheme="https"
                     android:host="prokesdex.vercel.app" />
+                <data
+                    android:scheme="http"
+                    android:host="prokesdex.vercel.app" />
+                <data
+                    android:scheme="https"
+                    android:host="prokesdex.vercel.app/#/" />
+                <data
+                    android:scheme="http"
+                    android:host="prokesdex.vercel.app/#/" />
             </intent-filter>
 
         </activity>
